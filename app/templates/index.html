@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Alunos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+      rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+      crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'estilo.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="https://kit.fontawesome.com/c5dcbf4cfc.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body style="background-color:rgb(188, 203, 204)">
+    <div class="content">
+      <div class="header-container col-8 m-auto pt-3 pb-2 text-center">
+        <div class="header-content">
+            <h1>Cadastro de Alunos</h1>
+        </div>
+      </div>
+      <div class="form-buscar-container col-8 m-auto pt-3 pb-2 text-center">
+        <form class="buscar-aluno" method="get">
+          <input type="text" id="search" name="search" class="form-control" placeholder="Buscar...">
+          <button id="btn-search" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+        </svg></button>
+        </form>
+      </div>
+
+      <div class="modal fade" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastro" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTitle">Cadastro</h5>
+            </div>
+            <div class="modal-body">
+              <form name="form" id="form" action="/create/" method="post">
+                {% csrf_token %}
+                {{form.non_field_errors}}
+                <div class="checkEdit">
+                  <p><input type="hidden" id="check_edit" name="check_edit" value="false"></p>
+                </div>
+                <div class="id-wrapper">
+                  <input type="hidden" class="form-control" id="id-aluno" name="id_aluno" value="">
+                </div>
+                <div class="pasta-wrapper">
+                  {{form.pasta.errors}}
+                  <label for="pasta" class="col-form-label">Pasta</label>
+                  <p>{{form.pasta}}</p>
+                </div>
+                <div class="ano-wrapper">
+                  {{form.ano.errors}}
+                  <label for="ano" class="col-form-label">Ano</label>
+                  <p>{{form.ano}}</p>
+                </div>
+                <div class="nome-wrapper">
+                  {{form.nome.errors}}
+                  <label for="nome" class="col-form-label">Nome</label>
+                  <p>{{form.nome}}</p>
+                </div>
+                <div class="filiacao-wrapper">
+                  {{form.filiacao.errors}}
+                  <label for="filiacao" class="col-form-label">Filiacação</label>
+                  <p>{{form.filiacao}}</p>
+                </div>
+                <p>
+                <div>
+                  <button type="submit" id="btn-salvar" class="btn btn-success mt-4"></button>
+                </div>
+                </p>
+              </form>
+            </div>
+            <div class="modal-footer"></div>
+          </div>
+        </div>
+      </div>
+
+      <div div class="col-8 m-auto pt-8 pb-2" align="right">
+        <a href="" id="btn-adicionar" class="btn btn-success" data-bs-toggle="modal"
+          data-bs-target="#modalCadastro"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+            <path
+              d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+            <path fill-rule="evenodd"
+              d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+        </svg> Cadastrar Aluno</a>
+      </div>
+
+      <div class="col-8 m-auto pt-4 pb-2 text-center">
+        <table class="table">
+          <thead>
+            <tr style="background-color: #3d3c3c; color:#fff">
+              <th scope="col">Pasta</th>
+              <th scope="col">Ano</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Filiação</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dbs in db %}
+            <tr>
+              <td>{{dbs.pasta}}</td>
+              <td>{{dbs.ano}}</td>
+              <td>{{dbs.nome}}</td>
+              <td>{{dbs.filiacao}}</td>
+              <td>
+                <button id="btn-editar" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCadastro"
+                  data-bs-id-aluno="{{dbs.id}}" data-bs-pasta="{{dbs.pasta}}" data-bs-ano="{{dbs.ano}}"
+                  data-bs-nome="{{dbs.nome}}" data-bs-filiacao="{{dbs.filiacao}}" data-bs-check="true"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path
+                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                    <path fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                  </svg></button>
+                <a href="/delete/{{dbs.id}}/" id="btn-deletar" class="btn btn-danger btnDel"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                    <path fill-rule="evenodd"
+                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                  </svg></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col-1 m-auto pt-auto pb-auto text-center">
+        <ul class="pagination" align="center">
+          {% if paginator.has_previous %}
+          <li class="page-item"><a href="?page={{db.previous_page_number}}" class="page-link" aria-label="Anterior">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Anterior</span> </a></li>
+          {% endif %}
+
+          <li class="page-item"><a href="" class="page-link"> {{paginator.number}} </a></li>
+
+          {% if paginator.has_next %}
+          <li class="page-item"><a href="?page={{db.next_page_number}}" class="page-link" aria-label="Próximo"> <span
+                aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Próximo</span> </a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    <div class="footer">
+      {% if user.is_authenticated %}
+      <strong>Bem vindo (a), {{user.get_full_name}}</strong>
+      {% endif %}
+      <form class="form-logout" action="/logout/" class="inline-form" method="get">
+        <button class="btn btn-logout" name="logout" value="logout"><i class="fas fa-sign-out-alt"></i></button>
+      </form>
+    </div>
+    <script src="{% static 'javascript.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"></script>
+  </body>
+
+</html>
